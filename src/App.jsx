@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from './hooks/useAuth';
 import { apiService } from './services/api';
-import { Login } from './components/Auth/Login';
+import { Login } from './components/LoginPage/Login';
 import { Layout } from './components/Layout/Layout';
 import { Dashboard } from './components/Dashboard/Dashboard';
 import { Sheets } from './components/Sheets/Sheets';

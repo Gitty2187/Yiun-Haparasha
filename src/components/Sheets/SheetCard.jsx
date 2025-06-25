@@ -19,16 +19,16 @@ export const SheetCard = ({ sheet, onNavigateToSubscribers }) => {
       </div>
 
       <div className="text-right mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">{sheet.name}</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">{sheet.sheetName}</h3>
         <div className="space-y-1 text-sm text-gray-600">
-          <p><span className="font-medium">מספר:</span> {sheet.number}</p>
-          <p><span className="font-medium">פרשה:</span> {sheet.parasha}</p>
-          <p><span className="font-medium">מנויים:</span> {sheet.subscriberCount.toLocaleString()}</p>
+          <p><span className="font-medium">מספר:</span> {sheet.sheetCode}</p>
+          <p><span className="font-medium">שם:</span> {sheet.description}</p>
+          <p><span className="font-medium">מנויים:</span> {sheet.subscribersNum}</p>
         </div>
       </div>
 
       <button
-        onClick={() => onNavigateToSubscribers(sheet.id, sheet.name)}
+        onClick={() => onNavigateToSubscribers(sheet.sheetCode, sheet.sheetName)}
         className="w-full flex items-center justify-center space-x-2 rtl:space-x-reverse bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
       >
         <Users className="w-4 h-4" />

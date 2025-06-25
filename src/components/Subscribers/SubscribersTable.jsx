@@ -38,8 +38,10 @@ export const SubscribersTable = ({ sheetId, sheetName }) => {
     try {
       setInitialLoading(true);
       const response = await apiService.getSubscribers(sheetId, 1, 50);
-      setSubscribers(response.data);
-      setHasMore(response.hasMore);
+      console.log(response);
+      
+      setSubscribers(response);
+      // setHasMore(response.hasMore);
       setPage(1);
     } catch (error) {
       console.error('Error loading subscribers:', error);

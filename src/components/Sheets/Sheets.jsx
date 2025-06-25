@@ -20,6 +20,7 @@ export const Sheets = ({ onNavigateToSubscribers }) => {
   const loadSheets = async () => {
     try {
       setLoading(true);
+      console.log("insert");
       const data = await apiService.getSheets();
       setSheets(data);
     } catch (error) {
@@ -30,17 +31,18 @@ export const Sheets = ({ onNavigateToSubscribers }) => {
   };
 
   const filterSheets = () => {
-    if (!searchQuery.trim()) {
-      setFilteredSheets(sheets);
-      return;
-    }
+    const filtered = sheets.filter(sheet => {
+      const query = searchQuery.trim();
+      const isNumeric = !isNaN(query);
 
-    const filtered = sheets.filter(sheet =>
-      sheet.name.includes(searchQuery) ||
-      sheet.number.includes(searchQuery) ||
-      sheet.parasha.includes(searchQuery)
-    );
+      return (
+        (isNumeric && sheet.sheetCode === Number(query)) ||
+        (sheet.description && sheet.sheetName.toLowerCase().includes(query.toLowerCase()))
+      );
+    });
+
     setFilteredSheets(filtered);
+
   };
 
   if (loading) {
@@ -58,10 +60,15 @@ export const Sheets = ({ onNavigateToSubscribers }) => {
         onSearchChange={setSearchQuery}
         totalSheets={filteredSheets.length}
       />
-      <SheetsGrid
-        sheets={filteredSheets}
-        onNavigateToSubscribers={onNavigateToSubscribers}
-      />
+
+      <div className="max-h-[600px] overflow-y-auto pr-2" dir="rtl">
+        <SheetsGrid
+          sheets={filteredSheets}
+          onNavigateToSubscribers={onNavigateToSubscribers}
+        />
+      </div>
     </div>
+
+
   );
 };

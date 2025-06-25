@@ -150,13 +150,13 @@ export const Layout = ({
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 shadow-sm">
+        {/* <header className="bg-white border-b border-gray-200 shadow-sm">
           <div className="px-6 py-4">
             <h2 className="text-lg font-semibold text-gray-900 text-right">
               {modules.find(m => m.id === currentModule)?.name || 'דשבורד'}
             </h2>
           </div>
-        </header>
+        </header> */}
 
         {/* Content */}
         <main className="flex-1 p-6 overflow-auto">

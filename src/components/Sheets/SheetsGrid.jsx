@@ -6,7 +6,7 @@ export const SheetsGrid = ({ sheets, onNavigateToSubscribers }) => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {sheets.map((sheet) => (
         <SheetCard
-          key={sheet.id}
+          key={sheet.sheetCode}
           sheet={sheet}
           onNavigateToSubscribers={onNavigateToSubscribers}
         />
