@@ -17,8 +17,8 @@ function App() {
     try {
       setLoginLoading(true);
       setLoginError(undefined);
-      const { user: userData, token } = await apiService.login(username, password);
-      await login(userData, token);
+      const { employee, token } = await apiService.login(username, password);
+await login(employee, token);
     } catch (error) {
       setLoginError(error instanceof Error ? error.message : 'שגיאה בכניסה');
     } finally {

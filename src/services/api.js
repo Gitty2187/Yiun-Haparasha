@@ -3,25 +3,36 @@ import axios from 'axios';
 
 class ApiService {
   BASE_URL = 'https://localhost:44382/api';
-
-  // Auth
-  async login(username, password) {
-    // Mock login - replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    if (username === 'admin' && password === 'password') {
-      return {
-        user: {
-          id: 1,
-          username: 'admin',
-          name: 'מנהל המערכת'
-        },
-        token: 'mock-jwt-token'
-      };
-    }
-
-    throw new Error('שם משתמש או סיסמה שגויים');
+  constructor() {
+    axios.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
   }
+
+
+async login(username, password) {
+  try {
+    const response = await axios.post(`https://localhost:44382/api/Employees/login`, {
+      userName: username,
+      password: password
+    });
+
+    return response.data; // { user, token }
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      throw new Error('שם משתמש או סיסמה לא נכונים');
+    } else {
+      throw new Error('שגיאה בשרת');
+    }
+  }
+};
 
   async logout() {
     // Mock logout
