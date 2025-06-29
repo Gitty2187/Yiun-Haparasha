@@ -94,6 +94,17 @@ export const AddSubscriberModal = ({
     }
   };
 
+  // Helper function to get the label text for a code
+  const getParashaAnswerText = (code) => {
+    const option = parashaOptions.find(opt => opt.value === code);
+    return option ? option.label : code;
+  };
+
+  const getHalachaAnswerText = (code) => {
+    const option = halachaOptions.find(opt => opt.value === code);
+    return option ? option.label : code;
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" dir="rtl">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -248,7 +259,6 @@ export const AddSubscriberModal = ({
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-right text-sm bg-white"
                     dir="rtl"
                   >
-                    <option value="">בחר...</option>
                     {parashaOptions.map(option => (
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
@@ -267,8 +277,8 @@ export const AddSubscriberModal = ({
                     onChange={(e) => setFormData(prev => ({ ...prev, yiunHalachaAnswersCode: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-right text-sm bg-white"
                     dir="rtl"
+                    disabled={!formData.yiunHalacha}
                   >
-                    <option value="">בחר...</option>
                     {halachaOptions.map(option => (
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
@@ -282,7 +292,12 @@ export const AddSubscriberModal = ({
                   <input
                     type="checkbox"
                     checked={formData.yiunHalacha || false}
-                    onChange={(e) => setFormData(prev => ({ ...prev, yiunHalacha: e.target.checked }))}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      yiunHalacha: e.target.checked,
+                      // Reset halacha answer code if unchecked
+                      yiunHalachaAnswersCode: e.target.checked ? prev.yiunHalachaAnswersCode : ''
+                    }))}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                 </label>

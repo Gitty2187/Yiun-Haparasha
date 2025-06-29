@@ -126,20 +126,21 @@ class ApiService {
 
   // Dropdown options
   async getParashaAnswers() {
-    return [
-      { value: 'A', label: 'תשובה נכונה' },
-      { value: 'B', label: 'תשובה שגויה' },
-      { value: 'C', label: 'לא השיב' },
-      { value: 'D', label: 'פסול' }
-    ];
+   try {
+      const response = await axios.get(`${this.BASE_URL}/CodeWithoutAnswersParasha`); return response.data;
+    } catch (error) {
+      console.error('שגיאה בשליפת קוד ללא תשובות פרשה:', error);
+      return [];
+    }
   }
 
   async getYiunHalachaAnswers() {
-    return [
-      { value: 'H1', label: 'תשובה נכונה' },
-      { value: 'H2', label: 'תשובה שגויה' },
-      { value: 'H3', label: 'לא השיב' }
-    ];
+   try {
+      const response = await axios.get(`${this.BASE_URL}/CodeWithoutAnswers`); return response.data;
+    } catch (error) {
+      console.error('שגיאה בשליפת קוד ללא תשובות פרשה:', error);
+      return [];
+    }
   }
 
   // Search subscribers

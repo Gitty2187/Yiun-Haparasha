@@ -28,7 +28,7 @@ export const SheetCard = ({ sheet, onNavigateToSubscribers }) => {
       </div>
 
       <button
-        onClick={() => onNavigateToSubscribers(sheet.sheetCode, sheet.sheetName)}
+        onClick={() => onNavigateToSubscribers(sheet.sheetCode, sheet.sheetName, sheet.subscribersNum)}
         className="w-full flex items-center justify-center space-x-2 rtl:space-x-reverse bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
       >
         <Users className="w-4 h-4" />

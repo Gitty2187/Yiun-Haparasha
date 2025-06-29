@@ -20,7 +20,6 @@ export const Sheets = ({ onNavigateToSubscribers }) => {
   const loadSheets = async () => {
     try {
       setLoading(true);
-      console.log("insert");
       const data = await apiService.getSheets();
       setSheets(data);
     } catch (error) {

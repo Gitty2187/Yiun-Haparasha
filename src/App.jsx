@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from './hooks/useAuth';
 import { apiService } from './services/api';
-import { Login } from './components/LoginPage/Login';
-import { Layout } from './components/Layout/Layout';
+import {Login} from './components/LoginPage/Login';
+import {Layout} from './components/Layout/Layout';
 import { Dashboard } from './components/Dashboard/Dashboard';
 import { Sheets } from './components/Sheets/Sheets';
 import { SubscribersTable } from './components/Subscribers/SubscribersTable';
@@ -37,13 +37,21 @@ function App() {
       setAppState({ type: 'sheets' });
     } else if (module === 'dashboard') {
       setAppState({ type: 'dashboard' });
+    } else if (module === 'subscribers') {
+      // Navigate to sheets when clicking subscribers
+      setAppState({ type: 'sheets' });
     } else {
       setAppState({ type: 'module', module });
     }
   };
 
-  const handleNavigateToSubscribers = (sheetId, sheetName) => {
-    setAppState({ type: 'subscribers', sheetId, sheetName });
+  const handleNavigateToSubscribers = (sheetId, sheetName, subscribersCount) => {
+    setAppState({ 
+      type: 'subscribers', 
+      sheetId, 
+      sheetName, 
+      subscribersCount 
+    });
   };
 
   const getCurrentModule = () => {
@@ -97,6 +105,7 @@ function App() {
           <SubscribersTable
             sheetId={appState.sheetId}
             sheetName={appState.sheetName}
+            subscriberCount={appState.subscribersCount}
           />
         );
       

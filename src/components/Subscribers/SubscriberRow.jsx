@@ -19,6 +19,18 @@ export const SubscriberRow = ({
     ? 'bg-blue-50 border-2 border-blue-200' 
     : isEvenRow ? 'bg-white' : 'bg-gray-50';
 
+  // Find the label text for the codes
+  const getParashaAnswerText = (code) => {
+    const option = parashaOptions.find(opt => opt.code === String(code));
+    return option ? option.description : code;
+  };
+
+  const getHalachaAnswerText = (code) => {
+    debugger
+    const option = halachaOptions.find(opt => opt.code === String(code));
+    return option ? option.description : code;
+  };
+
   return (
     <tr className={`${rowClass} transition-colors`}>
       <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-900 text-right">
@@ -68,7 +80,7 @@ export const SubscriberRow = ({
             dir="rtl"
           />
         ) : (
-          subscriber.scholarshipFund.toLocaleString()
+          subscriber.scholarshipFund?.toLocaleString()
         )}
       </td>
       <td className="px-2 py-3 whitespace-nowrap text-xs text-right">
@@ -84,8 +96,8 @@ export const SubscriberRow = ({
             ))}
           </select>
         ) : (
-          <div className="truncate" title={parashaOptions.find(opt => opt.value === subscriber.parashaAnswersCode)?.label || subscriber.parashaAnswersCode}>
-            {parashaOptions.find(opt => opt.value === subscriber.parashaAnswersCode)?.label || subscriber.parashaAnswersCode}
+          <div className="truncate" title={getParashaAnswerText(subscriber.parashaAnswersCode)}>
+            {getParashaAnswerText(subscriber.parashaAnswersCode)}
           </div>
         )}
       </td>
@@ -114,8 +126,8 @@ export const SubscriberRow = ({
             ))}
           </select>
         ) : (
-          <div className="truncate" title={halachaOptions.find(opt => opt.value === subscriber.yiunHalachaAnswersCode)?.label || subscriber.yiunHalachaAnswersCode}>
-            {halachaOptions.find(opt => opt.value === subscriber.yiunHalachaAnswersCode)?.label || subscriber.yiunHalachaAnswersCode}
+          <div className="truncate" title={getHalachaAnswerText(subscriber.yiunHalachaAnswersCode)}>
+            {getHalachaAnswerText(subscriber.yiunHalachaAnswersCode)}
           </div>
         )}
       </td>
@@ -141,12 +153,14 @@ export const SubscriberRow = ({
               <button
                 onClick={onSave}
                 className="text-green-600 hover:text-green-800 transition-colors"
+                title="שמור"
               >
                 <Save className="w-4 h-4" />
               </button>
               <button
                 onClick={onCancel}
                 className="text-red-600 hover:text-red-800 transition-colors"
+                title="בטל"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -156,12 +170,14 @@ export const SubscriberRow = ({
               <button
                 onClick={() => onEdit(subscriber)}
                 className="text-blue-600 hover:text-blue-800 transition-colors"
+                title="ערוך"
               >
                 <Edit className="w-4 h-4" />
               </button>
               <button
                 onClick={() => onDelete(subscriber.filingNumber)}
                 className="text-red-600 hover:text-red-800 transition-colors"
+                title="מחק"
               >
                 <Trash2 className="w-4 h-4" />
               </button>

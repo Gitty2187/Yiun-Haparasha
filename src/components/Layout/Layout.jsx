@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   LogOut, 
   User as UserIcon, 
-  Settings,
   Users, 
   FileText, 
   Receipt, 
@@ -124,16 +123,6 @@ export const Layout = ({
                 <button
                   onClick={() => {
                     setUserMenuOpen(false);
-                    // Handle profile edit
-                  }}
-                  className="w-full flex items-center space-x-3 rtl:space-x-reverse px-4 py-2 text-right hover:bg-gray-50 transition-colors"
-                >
-                  <Settings className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-700">עריכת פרטים</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setUserMenuOpen(false);
                     onLogout();
                   }}
                   className="w-full flex items-center space-x-3 rtl:space-x-reverse px-4 py-2 text-right hover:bg-gray-50 transition-colors text-red-600"
@@ -166,3 +155,4 @@ export const Layout = ({
     </div>
   );
 };
+

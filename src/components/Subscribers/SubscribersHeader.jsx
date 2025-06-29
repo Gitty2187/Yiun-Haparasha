@@ -18,6 +18,8 @@ export const SubscribersHeader = ({ sheetName, subscribersCount, onAddSubscriber
           <h1 className="text-2xl font-bold text-gray-900">
             זכיות למנויים לגיליון {sheetName}
           </h1>
+          {console.log(subscribersCount)
+          }
           <p className="text-sm text-gray-600 mt-1">{subscribersCount} מנויים</p>
         </div>
       </div>

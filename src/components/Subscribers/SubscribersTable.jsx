@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { apiService } from '../../services/api';
 import { Loader2 } from 'lucide-react';
 import { SubscribersHeader } from './SubscribersHeader';
@@ -6,9 +6,9 @@ import { SearchFilters } from './SearchFilters';
 import { SubscribersTableHeader } from './SubscribersTableHeader';
 import { SubscriberRow } from './SubscriberRow';
 import { AddSubscriberModal } from './AddSubscriberModal';
-import { ConfirmDialog } from '../UI/ConfirmDialog';
+import {ConfirmDialog} from '../UI/ConfirmDialog';
 
-export const SubscribersTable = ({ sheetId, sheetName }) => {
+export const SubscribersTable = ({ sheetId, sheetName, subscriberCount }) => {
   const [subscribers, setSubscribers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -22,11 +22,22 @@ export const SubscribersTable = ({ sheetId, sheetName }) => {
   const [parashaOptions, setParashaOptions] = useState([]);
   const [halachaOptions, setHalachaOptions] = useState([]);
   const [searchExpanded, setSearchExpanded] = useState(false);
+  
+  // Use ref to prevent duplicate API calls
+  const loadingRef = useRef(false);
+  const optionsLoadedRef = useRef(false);
 
   useEffect(() => {
-    loadInitialData();
-    loadDropdownOptions();
+    if (!loadingRef.current) {
+      loadInitialData();
+    }
   }, [sheetId]);
+
+  useEffect(() => {
+    if (!optionsLoadedRef.current) {
+      loadDropdownOptions();
+    }
+  }, []);
 
   useEffect(() => {
     if (Object.keys(searchFilters).length > 0) {
@@ -35,23 +46,30 @@ export const SubscribersTable = ({ sheetId, sheetName }) => {
   }, [searchFilters]);
 
   const loadInitialData = async () => {
+    if (loadingRef.current) return;
+    
     try {
+      loadingRef.current = true;
       setInitialLoading(true);
-      const response = await apiService.getSubscribers(sheetId, 1, 50);
-      console.log(response);
       
-      setSubscribers(response);
-      // setHasMore(response.hasMore);
+      const response = await apiService.getSubscribers(sheetId, 1, 50);
+      
+      setSubscribers(response.data || response);
+      setHasMore(response.hasMore || false);
       setPage(1);
     } catch (error) {
       console.error('Error loading subscribers:', error);
     } finally {
       setInitialLoading(false);
+      loadingRef.current = false;
     }
   };
 
   const loadDropdownOptions = async () => {
+    if (optionsLoadedRef.current) return;
+    
     try {
+      optionsLoadedRef.current = true;
       const [parasha, halacha] = await Promise.all([
         apiService.getParashaAnswers(),
         apiService.getYiunHalachaAnswers()
@@ -60,18 +78,19 @@ export const SubscribersTable = ({ sheetId, sheetName }) => {
       setHalachaOptions(halacha);
     } catch (error) {
       console.error('Error loading dropdown options:', error);
+      optionsLoadedRef.current = false; // Reset on error
     }
   };
 
   const loadMore = async () => {
-    if (!hasMore || loading) return;
+    if (!hasMore || loading || loadingRef.current) return;
 
     try {
       setLoading(true);
       const nextPage = page + 1;
       const response = await apiService.getSubscribers(sheetId, nextPage, 50, searchFilters);
-      setSubscribers(prev => [...prev, ...response.data]);
-      setHasMore(response.hasMore);
+      setSubscribers(prev => [...prev, ...(response.data || response)]);
+      setHasMore(response.hasMore || false);
       setPage(nextPage);
     } catch (error) {
       console.error('Error loading more subscribers:', error);
@@ -81,16 +100,21 @@ export const SubscribersTable = ({ sheetId, sheetName }) => {
   };
 
   const handleSearch = async () => {
+    if (loadingRef.current) return;
+    
     try {
+      loadingRef.current = true;
       setLoading(true);
+      
       const response = await apiService.getSubscribers(sheetId, 1, 50, searchFilters);
-      setSubscribers(response.data);
-      setHasMore(response.hasMore);
+      setSubscribers(response.data || response);
+      setHasMore(response.hasMore || false);
       setPage(1);
     } catch (error) {
       console.error('Error searching subscribers:', error);
     } finally {
       setLoading(false);
+      loadingRef.current = false;
     }
   };
 
@@ -147,6 +171,7 @@ export const SubscribersTable = ({ sheetId, sheetName }) => {
 
   const clearSearch = () => {
     setSearchFilters({});
+    loadingRef.current = false; // Reset loading ref
     loadInitialData();
   };
 
@@ -162,10 +187,10 @@ export const SubscribersTable = ({ sheetId, sheetName }) => {
     <div className="h-full flex flex-col" dir="rtl">
       <SubscribersHeader
         sheetName={sheetName}
-        subscribersCount={subscribers.length}
+        subscribersCount={subscriberCount}
         onAddSubscriber={() => setShowAddModal(true)}
       />
-
+      
       <SearchFilters
         searchFilters={searchFilters}
         onFiltersChange={setSearchFilters}
@@ -181,7 +206,7 @@ export const SubscribersTable = ({ sheetId, sheetName }) => {
             <tbody className="bg-white divide-y divide-gray-200">
               {subscribers.map((subscriber, index) => (
                 <SubscriberRow
-                  key={subscriber.filingNumber}
+                  key={`subscriber-${subscriber.filingNumber}`}
                   subscriber={subscriber}
                   index={index}
                   isEditing={editingRow === subscriber.filingNumber}
@@ -207,6 +232,13 @@ export const SubscribersTable = ({ sheetId, sheetName }) => {
           {!hasMore && subscribers.length > 0 && (
             <div className="text-center py-4 text-gray-500 text-sm">
               הוצגו כל הרשומות
+            </div>
+          )}
+
+          {subscribers.length === 0 && !loading && (
+            <div className="text-center py-12 text-gray-500">
+              <p className="text-lg font-medium">לא נמצאו מנויים</p>
+              <p className="text-sm mt-2">נסה לשנות את פרמטרי החיפוש או להוסיף מנויים חדשים</p>
             </div>
           )}
         </div>
